@@ -2,11 +2,19 @@
 /*
 新民國小消耗品計算用的小系統
 */
+//-----引入區-----
+include "../../mainfile.php";
+include "../../header.php";
+
+
+//-----函數區-----
 
 //檢查是否為管理帳號
 function checkUser{
-
-
+	global $xoopsUser;
+	if(empty($xoopsUser)){
+		redirect_header(XOOPS_URL . "/index.php",3,"請先登入");
+	}
 }
 //menu,包含消耗品管理、教師清單管理、各月份報表匯出
 function menu{
