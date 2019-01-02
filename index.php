@@ -1,51 +1,72 @@
 <?php
 /*
-新民國小消耗品計算用的小系統
+聲明：
+1.本程式為新民智障生設計製作
+2.本系統主要是用來協助管理消耗品
+3.由教師上網填寫所需的消耗品
+4.列印申請單給承辦人留存
+5.找承辦人拿消耗品
+開始撰寫時間：2019/01/02
+完成撰寫時間：
+程式設計者：葉大炮
+系統架設：xoops
 */
+
 //-----引入區-----
 include "../../mainfile.php";
 include "../../header.php";
+include_once XOOPS_ROOT_PATH . "/modules/tadtools/tad_function.php";
+
 
 
 //-----函數區-----
 
-//檢查是否為管理帳號
-function checkUser{
+//自訂選單
+function my_menu(){
 	global $xoopsUser;
-	if(empty($xoopsUser)){
-		redirect_header(XOOPS_URL . "/index.php",3,"請先登入");
+	$menu="";
+	if($xoopsUser){
+		$isAdmin=$xoopsUser->isAdmin();
+		if($isAdmin){
+			$menu="<div align='center'>[<a href='index.php'>首頁</a>]</div>";
+		}
 	}
-}
-//menu,包含消耗品管理、教師清單管理、各月份報表匯出
-function menu{
-
-
+	return $menu;
 }
 
-/*
-這邊是管理消耗品的頁面(部份選項設計為)
-*/
-
-//item_add_form
-//item_update_form
-//item_add(增購)
-//item_update
-//item_showList
-
-/*
-這邊是教師清單的管理頁面
-*/
 
 
-//teacher_showList
-//teacher_add_form
-//teacher_update_form
-//teacher_add
-//teacher_update
+//這邊是用來讓老師領用的表單
+function get_form(){
+	//表單
+	$form="<form method='post' action='index.php?op=save'>";
+	$form.="<table>";
+	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
+	$form.="<tr><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td></tr>";
+	$form.="<tr><td><Input Type='Submit' Value='送出'></td></tr>";
+	$form.="</table>";
+	$form.="</form>";
+	return $form;
+}
 
-/*
-這邊是增購的頁面
-*/
 
-//
+
+
+//-----判斷區-----
+switch ($op) {
+	case 'value':
+		# code...
+		break;
+	
+	default:
+		$main=get_form();
+		break;
+}
+
+
+//-----顯示區-----
+
+my_menu();
+echo $main;
+include "../../footer.php";
 ?>
