@@ -26,43 +26,89 @@ function my_menu(){
 	global $xoopsUser;
 	$menu="";
 	if($xoopsUser){
-		$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div>";
+		$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='addManage.php'>增購消耗品</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div><br>";
 	}
 	return $menu;
 }
 
 
 
-//這邊是用來讓老師領用的表單
-function get_form(){
+//這邊是新增消耗品的表單
+function add_form(){
 	//表單
 	$form="<form method='post' action='index.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
-	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
-	$form.="<tr><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td></tr>";
-	$form.="<tr><td colspan='3'><div align='center'><Input Type='Submit' Value='送出'></div></td></tr>";
+	$form.="<tr><td>消耗品名稱</td><td><input type='text' name='item_name' size='12'></td><td><Input Type='Submit' Value='新增'></td></tr>";
 	$form.="</table>";
 	$form.="</form>";
 	return $form;
+}
+
+//新增消耗品
+function save(){
+  global $xoopsDB;
+   $sql = "insert into " . $xoopsDB->prefix('consumables_item') . " (`item_name`, `item_postTime`) values ('{$_POST['item_name']}',now())";
+  $xoopsDB->query($sql) or redirect_header("list.php",3,"新增失敗"); 
+}
+
+//所有消耗品清單
+function item_list(){
+	global $xoopsDB;
+	$sql="select * from `" . $xoopsDB->prefix('consumables_item') . "` order by sn";
+	$result=$xoopsDB->query($sql) or die($sql);
+	$itemList="<table border='1'>";
+	$itemList.="<tr><th>消耗品</th><th>數量</th><th>管理</th></tr>";
+	while (list($item_sn, $item_name, $sex, $item_number, $item_postTime)=$xoopsDB->fetchRow($result)){
+		//這邊開始產生表格
+		//修改連結
+    	$modifyLink="<a href='list.php?op=updateForm&sn=$sn'>修</a>";
+    	//刪除連結
+    	$delLink="<a href='list.php?op=del&sn=$sn'>刪</a>";
+		$itemList.="<tr><td>$item_name</td><td></td><td>$modifyLink | $delLink</td></tr>";	
+	}
+	$itemList.="</table>";
+
+}
+
+
+//刪除
+function del($sn){
+  global $xoopsDB;
+  $sql="delete from `" . $xoopsDB->prefix('consumables_item') . "` where `sn`=$sn";
+  $xoopsDB->queryF($sql) or die($sql);
 }
 
 
 
 
 //-----判斷區-----
+$op=(empty($_REQUEST['op']))?"":$_REQUEST['op'];
+$item_name=(empty($_REQUEST['item_name']))?"":$_REQUEST['item_name'];
+
 switch ($op) {
+	case 'save':
+		save();
+		redirect_header("itemManage.php",3,"新增成功");
+		break;
 	case 'value':
 		# code...
 		break;
-	
+	case 'value':
+		# code...
+		break;
+	case 'value':
+		# code...
+		break;
+
 	default:
 		$main=my_menu();
-		$main.=get_form();
+		$main.=add_form();
 		break;
 }
 
 
 //-----顯示區-----
+
 
 echo $main;
 include "../../footer.php";

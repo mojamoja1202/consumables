@@ -26,7 +26,7 @@ function my_menu(){
 	global $xoopsUser;
 	$menu="";
 	if($xoopsUser){
-		$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div>";
+		$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='addManage.php'>增購消耗品</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div><br>";
 	}
 	return $menu;
 }
@@ -39,9 +39,9 @@ function get_form(){
 	$form="<form method='post' action='index.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
 	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
-	$form.="<tr><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td></tr>";
-	$form.="<tr><td colspan='3'><div align='center'><Input Type='Submit' Value='送出'></div></td></tr>";
+	$form.="<tr><td><input type='text' name='item_name' size='1'></td><td><input type='text' name='get_teacher' size='1'></td><td><input type='text' name='get_number' size='1'></td></tr>";
 	$form.="</table>";
+	$form.="<div align='center'><Input Type='Submit' Value='送出'></div>";
 	$form.="</form>";
 	return $form;
 }
