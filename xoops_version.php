@@ -32,10 +32,10 @@ $modversion['paypal']['currency_code'] = 'USD';
 
 //---模組資料表架構---//
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
-$modversion['tables'][1]        = "thing_item";
-$modversion['tables'][2]        = "thing_teacherList";
-$modversion['tables'][3]        = "thing_getList";
-$modversion['tables'][4]        = "thing_addList";
+$modversion['tables'][1]        = "consumables_add";
+$modversion['tables'][2]        = "consumables_get";
+$modversion['tables'][3]        = "consumables_teacher";
+$modversion['tables'][4]        = "consumables_item";
 
 //---後台使用系統選單---//
 $modversion['system_menu'] = 0;
