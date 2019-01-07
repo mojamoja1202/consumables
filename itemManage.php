@@ -36,7 +36,7 @@ function my_menu(){
 //這邊是新增消耗品的表單
 function add_form(){
 	//表單
-	$form="<form method='post' action='index.php?op=save'>";
+	$form="<form method='post' action='itemManage.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
 	$form.="<tr><td>消耗品名稱</td><td><input type='text' name='item_name' size='12'></td><td><Input Type='Submit' Value='新增'></td></tr>";
 	$form.="</table>";
@@ -54,7 +54,7 @@ function save(){
 //所有消耗品清單
 function item_list(){
 	global $xoopsDB;
-	$sql="select * from `" . $xoopsDB->prefix('consumables_item') . "` order by sn";
+	$sql="select * from " . $xoopsDB->prefix('consumables_item') ;
 	$result=$xoopsDB->query($sql) or die($sql);
 	$itemList="<table border='1'>";
 	$itemList.="<tr><th>消耗品</th><th>數量</th><th>管理</th></tr>";
@@ -102,7 +102,10 @@ switch ($op) {
 
 	default:
 		$main=my_menu();
+		$main.="<br>";
 		$main.=add_form();
+		$main.="<br>";
+		$main.=item_list();;
 		break;
 }
 

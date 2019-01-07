@@ -38,7 +38,7 @@ $modversion['tables'][3]        = "consumables_teacher";
 $modversion['tables'][4]        = "consumables_item";
 
 //---後台使用系統選單---//
-$modversion['system_menu'] = 0;
+$modversion['system_menu'] = 1;
 
 //---後台管理介面設定---//
 $modversion['hasAdmin']   = 0;
