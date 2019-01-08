@@ -20,15 +20,52 @@ include "../../header.php";
 
 
 //-----函數區-----
+//教師下拉選單
+function teacherSelect(){
+	global $xoopsDB;
+	$sql="select `teacher_name` from " . $xoopsDB->prefix('consumables_teacher');
+	$result=$xoopsDB->query($sql) or die($xoopsDB->error());
+	$teacher_select="<select name='teacherSelect'>";
+	while (list($teacher_name)=$xoopsDB->fetchRow($result)){
+		$teacher_select.="<option value='$teacher_name'>$teacher_name</option>";
+	}
+	$teacher_select.="</select>";
+	return $teacher_select;
+}
+
+
+//消耗品下拉選單
+function itemSelect(){
+	global $xoopsDB;
+	$sql="select `item_name` from " . $xoopsDB->prefix('consumables_item');
+	$result=$xoopsDB->query($sql) or die($xoopsDB->error());
+	$item_select="<select name='itemSelect'>";
+	while (list($item_name)=$xoopsDB->fetchRow($result)){
+		$item_select.="<option value='$item_name'>$item_name</option>";
+	}
+	$teacher_select.="</select>";
+	return $item_select;
+}
+
+
+
 
 //自訂選單
 function my_menu(){
-	global $xoopsUser;
-	$menu="";
-	if($xoopsUser){
-		$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='addManage.php'>增購消耗品</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div><br>";
-	}
+	//global $xoopsUser;
+	//$menu="";
+	//if($xoopsUser){
+	$menu="<div align='center'>[<a href='index.php'>首頁</a> | <a href='itemManage.php'>消耗品管理</a> | <a href='addManage.php'>增購消耗品</a> | <a href='teacherManage.php'>教師清單</a> | <a href='output.php'>匯出月報表</a>]</div><br>";
+//	}
 	return $menu;
+}
+
+
+//新增教師名單
+function save(){
+  global $xoopsDB;
+   $sql = "insert into " . $xoopsDB->prefix('consumables_get') . " (`get_item`, `get_teacher`, `get_number`, `get_postTime`) values ('{$_POST['itemSelect']}', '{$_POST['teacherSelect']}', '{$_POST['get_number']}',now())";
+  $xoopsDB->query($sql) or die($xoopsDB->error()); 
 }
 
 
@@ -39,7 +76,11 @@ function get_form(){
 	$form="<form method='post' action='index.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
 	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
-	$form.="<tr><td><input type='text' name='item_name' size='1'></td><td><input type='text' name='get_teacher' size='1'></td><td><input type='text' name='get_number' size='1'></td></tr>";
+	$form.="<tr><td>";
+	$form.=itemSelect();
+	$form.="</td><td>";
+	$form.=teacherSelect();
+	$form.="</td><td><input type='text' name='get_number' size='1'></td></tr>";
 	$form.="</table>";
 	$form.="<div align='center'><Input Type='Submit' Value='送出'></div>";
 	$form.="</form>";
@@ -50,9 +91,17 @@ function get_form(){
 
 
 //-----判斷區-----
+$op=(empty($_REQUEST['op']))?"":$_REQUEST['op'];
+$sn=(empty($_REQUEST['sn']))?"":$_REQUEST['sn'];
+
+
+
+
+
 switch ($op) {
-	case 'value':
-		# code...
+	case 'save':
+		save();
+		redirect_header("index.php",3,"領取成功");
 		break;
 	
 	default:
