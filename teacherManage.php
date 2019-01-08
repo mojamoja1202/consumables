@@ -33,36 +33,86 @@ function my_menu(){
 
 
 
-//這邊是用來讓老師領用的表單
-function get_form(){
+//這邊是新增教師的表單
+function add_form(){
 	//表單
-	$form="<form method='post' action='index.php?op=save'>";
-	$form.="<table border='1' width='80%'>";
-	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
-	$form.="<tr><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td><td><input type='text' name='place' size='1'></td></tr>";
-	$form.="<tr><td colspan='3'><div align='center'><Input Type='Submit' Value='送出'></div></td></tr>";
+	$form="<form method='post' action='teacherManage.php?op=save'>";
+	$form.="<table border='1'>";
+	$form.="<tr><td>教師名稱</td><td><input type='text' name='teacher_name' size='12'></td><td><Input Type='Submit' Value='新增'></td></tr>";
 	$form.="</table>";
 	$form.="</form>";
 	return $form;
+}
+
+//新增教師名單
+function save(){
+  global $xoopsDB;
+   $sql = "insert into " . $xoopsDB->prefix('consumables_teacher') . " (`teacher_name`, `teacher_postTime`) values ('{$_POST['teacher_name']}',now())";
+  $xoopsDB->query($sql) or die($xoopsDB->error());//redirect_header("itemManage.php",3,"新增失敗"); 
+}
+
+//所有教師清單
+function teacher_list(){
+	global $xoopsDB;
+	$sql="select * from " . $xoopsDB->prefix('consumables_teacher') ;
+	$result=$xoopsDB->query($sql) or die($xoopsDB->error());
+	$teacherList="<table border='1'>";
+	$teacherList.="<tr><th>教師名稱</th><th>管理</th></tr>";
+	while (list($teacher_sn, $teacher_name, $teacher_postTime)=$xoopsDB->fetchRow($result)){
+		//這邊開始產生表格
+		//修改連結
+    	$modifyLink="<a href='teacherManage.php?op=updateForm&sn=$teacher_sn'>修</a>";
+    	//刪除連結
+    	$delLink="<a href='teacherManage.php?op=del&sn=$teacher_sn'>刪</a>";
+		$teacherList.="<tr><td>$teacher_name</td><td>$modifyLink | $delLink</td></tr>";	
+	}
+	$teacherList.="</table>";
+	return $teacherList;
+}
+
+
+//刪除
+function del($sn){
+  global $xoopsDB;
+  $sql="delete from `" . $xoopsDB->prefix('consumables_teacher') . "` where `teacher_sn`=$sn";
+  $xoopsDB->queryF($sql) or die($xoopsDB->error());
 }
 
 
 
 
 //-----判斷區-----
+$op=(empty($_REQUEST['op']))?"":$_REQUEST['op'];
+$sn=(empty($_REQUEST['sn']))?"":$_REQUEST['sn'];
+
 switch ($op) {
+	case 'save':
+		save();
+		redirect_header("teacherManage.php",3,"新增成功");
+		break;
+	case 'del':
+		del($sn);
+		redirect_header("teacherManage.php",3,"刪除成功");
+		break;
 	case 'value':
 		# code...
 		break;
-	
+	case 'value':
+		# code...
+		break;
+
 	default:
 		$main=my_menu();
-		$main.=get_form();
+		$main.="<br>";
+		$main.=add_form();
+		$main.="<br><h1 align='center'>教師清單</h1><br>";
+		$main.=teacher_list();;
 		break;
 }
 
 
 //-----顯示區-----
+
 
 echo $main;
 include "../../footer.php";

@@ -38,7 +38,7 @@ function add_form(){
 	//表單
 	$form="<form method='post' action='itemManage.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
-	$form.="<tr><td>消耗品名稱</td><td><input type='text' name='item_name' size='12'></td><td><Input Type='Submit' Value='新增'></td></tr>";
+	$form.="<tr><td>消耗品名稱</td><td><input type='text' name='item_name' size='36'></td><td><Input Type='Submit' Value='新增'></td></tr>";
 	$form.="</table>";
 	$form.="</form>";
 	return $form;
@@ -47,8 +47,8 @@ function add_form(){
 //新增消耗品
 function save(){
   global $xoopsDB;
-   $sql = "insert into " . $xoopsDB->prefix('consumables_item') . " (`item_name`, `item_postTime`) values ('{$_POST['item_name']}',now())";
-  $xoopsDB->query($sql) or redirect_header("list.php",3,"新增失敗"); 
+   $sql = "insert into " . $xoopsDB->prefix('consumables_item') . " (`item_name`, `item_number`, `item_postTime`) values ('{$_POST['item_name']}',0,now())";
+  $xoopsDB->query($sql) or die($xoopsDB->error());//redirect_header("itemManage.php",3,"新增失敗"); 
 }
 
 //所有消耗品清單
@@ -58,24 +58,24 @@ function item_list(){
 	$result=$xoopsDB->query($sql) or die($sql);
 	$itemList="<table border='1'>";
 	$itemList.="<tr><th>消耗品</th><th>數量</th><th>管理</th></tr>";
-	while (list($item_sn, $item_name, $sex, $item_number, $item_postTime)=$xoopsDB->fetchRow($result)){
+	while (list($item_sn, $item_name, $item_number, $item_postTime)=$xoopsDB->fetchRow($result)){
 		//這邊開始產生表格
 		//修改連結
-    	$modifyLink="<a href='list.php?op=updateForm&sn=$sn'>修</a>";
+    	$modifyLink="<a href='itemManage.php?op=updateForm&sn=$item_sn'>修</a>";
     	//刪除連結
-    	$delLink="<a href='list.php?op=del&sn=$sn'>刪</a>";
-		$itemList.="<tr><td>$item_name</td><td></td><td>$modifyLink | $delLink</td></tr>";	
+    	$delLink="<a href='itemManage.php?op=del&sn=$item_sn'>刪</a>";
+		$itemList.="<tr><td>$item_name</td><td>$item_number</td><td>$modifyLink | $delLink</td></tr>";	
 	}
 	$itemList.="</table>";
-
+	return $itemList;
 }
 
 
 //刪除
 function del($sn){
   global $xoopsDB;
-  $sql="delete from `" . $xoopsDB->prefix('consumables_item') . "` where `sn`=$sn";
-  $xoopsDB->queryF($sql) or die($sql);
+  $sql="delete from `" . $xoopsDB->prefix('consumables_item') . "` where `item_sn`=$sn";
+  $xoopsDB->queryF($sql) or die($xoopsDB->error());
 }
 
 
@@ -83,15 +83,16 @@ function del($sn){
 
 //-----判斷區-----
 $op=(empty($_REQUEST['op']))?"":$_REQUEST['op'];
-$item_name=(empty($_REQUEST['item_name']))?"":$_REQUEST['item_name'];
+$sn=(empty($_REQUEST['sn']))?"":$_REQUEST['sn'];
 
 switch ($op) {
 	case 'save':
 		save();
 		redirect_header("itemManage.php",3,"新增成功");
 		break;
-	case 'value':
-		# code...
+	case 'del':
+		del($sn);
+		redirect_header("itemManage.php",3,"刪除成功");
 		break;
 	case 'value':
 		# code...
@@ -104,7 +105,7 @@ switch ($op) {
 		$main=my_menu();
 		$main.="<br>";
 		$main.=add_form();
-		$main.="<br>";
+		$main.="<br><h1 align='center'>消耗品清單</h1><br>";
 		$main.=item_list();;
 		break;
 }
