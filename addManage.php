@@ -33,15 +33,13 @@ function my_menu(){
 
 
 
-//這邊是用來讓老師領用的表單
-function get_form(){
+//這邊是用來增加消耗品數量的表單
+function add_form(){
 	//表單
-	$form="<form method='post' action='index.php?op=save'>";
+	$form="<form method='post' action='itemManage.php?op=save'>";
 	$form.="<table border='1' width='80%'>";
-	$form.="<tr><td>領取消耗品</td><td>領取教師</td><td>領取數量</td></tr>";
-	$form.="<tr><td><input type='text' name='item_name' size='1'></td><td><input type='text' name='get_teacher' size='1'></td><td><input type='text' name='get_number' size='1'></td></tr>";
+	$form.="<tr><td>消耗品名稱</td><td>增購<input type='text' name='add_number' size='36'></td><td><Input Type='Submit' Value='新增'></td></tr>";
 	$form.="</table>";
-	$form.="<div align='center'><Input Type='Submit' Value='送出'></div>";
 	$form.="</form>";
 	return $form;
 }
