@@ -64,8 +64,16 @@ function my_menu(){
 //新增教師名單
 function save(){
   global $xoopsDB;
-   $sql = "insert into " . $xoopsDB->prefix('consumables_get') . " (`get_item`, `get_teacher`, `get_number`, `get_postTime`) values ('{$_POST['itemSelect']}', '{$_POST['teacherSelect']}', '{$_POST['get_number']}',now())";
-  $xoopsDB->query($sql) or die($xoopsDB->error()); 
+  $sql = "insert into " . $xoopsDB->prefix('consumables_get') . " (`get_item`, `get_teacher`, `get_number`, `get_postTime`) values ('{$_POST['itemSelect']}', '{$_POST['teacherSelect']}', '{$_POST['get_number']}',now())";
+  $xoopsDB->query($sql) or die($xoopsDB->error());
+  $sql="select item_number from " . $xoopsDB->prefix('consumables_item') . " where item_name='{$_POST['itemSelect']}'";
+  $result=$xoopsDB->query($sql) or die($xoopsDB->error());
+  list($item_number)=$xoopsDB->fetchRow($result);
+  if($item_number<"{$_POST['get_number']}"){
+  	redirect_header("index.php",10,"數量不足，請通知承辦人");
+  }
+  $sql="update `" . $xoopsDB->prefix('consumables_item') . "` set item_number=item_number-{$_POST['get_number']} where item_name='{$_POST['itemSelect']}'";
+  $xoopsDB->queryF($sql) or die($xoopsDB->error());
 }
 
 

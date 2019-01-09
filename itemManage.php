@@ -21,6 +21,45 @@ include "../../header.php";
 
 //-----函數區-----
 
+
+//確認是否是有註冊過的帳號
+function checkUser(){
+	global $xoopsUser;
+	if(empty($xoopsUser)){redirect_header(XOOPS_URL . "/index.php", 3, "請先登入");}
+}
+
+//修改表單
+function updateForm($sn){
+	global $xoopsDB;
+	$sql="select * from " . $xoopsDB->prefix('consumables_item') . " where item_sn=$sn";
+	$result=$xoopsDB->query($sql) or die($xoopsDB->error());
+	list($item_sn, $item_name, $item_number, $teacher_postTime)=$xoopsDB->fetchRow($result);
+	$main="<h1 align='center'>修改名字</h1>";
+	$main.="<form action='itemManage.php?op=update&sn=$sn' method='POST'>";
+	$main.="<table border='1'>";
+	$main.="<tr><td>消耗品名稱</td><td><input type='text' name='item_name' size='12' value='$item_name'></td><td><Input Type='Submit' Value='修改'></td></tr>";
+	$main.="</table>";
+	$main.="</form>";
+	return $main;
+}
+
+
+
+
+//修改資料
+function update($sn){
+  global $xoopsDB;
+  $sql="update `" . $xoopsDB->prefix('consumables_item') . "` set
+  `item_name`      =   '{$_POST['item_name']}',
+  `item_postTime`  =   now()
+  where teacher_sn=$sn";
+  $xoopsDB->queryF($sql) or die($sql);
+}
+
+
+
+
+
 //自訂選單
 function my_menu(){
 	global $xoopsUser;
@@ -102,6 +141,7 @@ switch ($op) {
 		break;
 
 	default:
+		checkUser();
 		$main=my_menu();
 		$main.="<br>";
 		$main.=add_form();
